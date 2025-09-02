@@ -1,0 +1,44 @@
+[
+  {
+    "id": "1",
+    "name": "Margherita Pizza",
+    "description": "Classic pizza with tomato sauce and mozzarella",
+    "price": 12.99,
+    "image": "images/pizza.jpg"
+  },
+  {
+    "id": "2",
+    "name": "Cheeseburger",
+    "description": "Juicy beef burger with cheese and fresh vegetables",
+    "price": 9.99,
+    "image": "images/burger.jpg"
+  },
+  {
+    "id": "3",
+    "name": "Caesar Salad",
+    "description": "Fresh romaine lettuce with Caesar dressing and croutons",
+    "price": 7.99,
+    "image": "images/salad.jpg"
+  },
+  {
+    "id": "4",
+    "name": "Spaghetti Carbonara",
+    "description": "Pasta with eggs, cheese, pancetta, and black pepper",
+    "price": 14.99,
+    "image": "images/pasta.jpg"
+  },
+  {
+    "id": "5",
+    "name": "Grilled Salmon",
+    "description": "Fresh salmon fillet with lemon and herbs",
+    "price": 18.99,
+    "image": "images/salmon.jpg"
+  },
+  {
+    "id": "6",
+    "name": "Chicken Soup",
+    "description": "Homemade chicken soup with vegetables",
+    "price": 6.99,
+    "image": "images/soup.jpg"
+  }
+]
