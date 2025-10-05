@@ -1,24 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Restaurant Digital Menu</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css" />
     <!-- QR Code library -->
     <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
-</head>
-<body>
+  </head>
+  <body>
     <header>
-        <h1>Restaurant Digital Menu</h1>
-    </header>
-    
-    <main>
-        <div id="menu-container" class="menu-grid">
-            <!-- Menu items will be loaded here dynamically -->
+      <h1 id="header-title">Restaurant Digital Menu</h1>
+      <div class="header-controls">
+        <div class="language-selector">
+          <button id="lang-en" class="lang-btn active">English</button>
+          <button id="lang-ar" class="lang-btn">العربية</button>
         </div>
+        <div class="currency-selector">
+          <select id="currency-select">
+            <option value="USD">USD ($)</option>
+            <option value="YER">YER (﷼)</option>
+          </select>
+        </div>
+      </div>
+      <nav class="main-nav">
+        <div class="nav-left">
+          <!-- Left side is now empty -->
+        </div>
+        <div class="nav-center">
+          <button id="edit-items-btn" class="nav-link">Edit Items</button>
+          <a href="index.html" class="nav-link active">
+            <span class="home-icon">🏠</span>
+            <span class="home-text">Home</span>
+          </a>
+          <button id="add-item-btn" class="nav-link">Add New Item</button>
+        </div>
+        <div class="nav-right">
+          <!-- Right side is now empty -->
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <div class="main-container">
+        <!-- Left Navigation Bar -->
+        <nav class="category-nav">
+          <ul>
+            <li>
+              <a href="#" class="category-link active" data-category="all">
+                <span class="category-text-en">All Items</span>
+                <span class="category-text-ar">جميع العناصر</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="category-link" data-category="lunch">
+                <span class="category-text-en">LUNCH</span>
+                <span class="category-text-ar">الغداء</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="category-link" data-category="breakfast">
+                <span class="category-text-en">BREAKFAST</span>
+                <span class="category-text-ar">الإفطار</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="category-link" data-category="dinner">
+                <span class="category-text-en">DINNER</span>
+                <span class="category-text-ar">العشاء</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="category-link" data-category="drinks">
+                <span class="category-text-en">DRINKS</span>
+                <span class="category-text-ar">المشروبات</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- Menu Grid -->
+        <div id="menu-container" class="menu-grid">
+          <!-- Menu items will be loaded here dynamically -->
+        </div>
+      </div>
     </main>
 
+    <!-- Modal for adding/editing items -->
+    <div id="item-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="modal-title">Add New Menu Item</h2>
+        <form id="item-form">
+          <input type="hidden" id="item-id" />
+          <div class="form-group">
+            <label for="item-name">Name:</label>
+            <input type="text" id="item-name" required />
+          </div>
+          <div class="form-group">
+            <label for="item-description">Description:</label>
+            <textarea id="item-description" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="item-price">Price (USD):</label>
+            <input type="number" id="item-price" step="0.01" min="0" required />
+          </div>
+          <div class="form-group">
+            <label for="item-category">Category:</label>
+            <select id="item-category" required>
+              <option value="lunch">LUNCH</option>
+              <option value="breakfast">BREAKFAST</option>
+              <option value="dinner">DINNER</option>
+              <option value="drinks">DRINKS</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="item-image-file">Image:</label>
+            <input type="file" id="item-image-file" accept="image/*" />
+            <small>Upload an image from your computer</small>
+          </div>
+          <div class="form-group">
+            <label for="item-image">Image URL (optional):</label>
+            <input
+              type="text"
+              id="item-image"
+              placeholder="images/example.jpg"
+            />
+            <small>Or enter a URL to an online image</small>
+          </div>
+          <div class="form-group">
+            <button type="submit">Save Item</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
     <script src="js/menu.js"></script>
-</body>
+  </body>
 </html>

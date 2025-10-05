@@ -1,25 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Item Details - Restaurant Menu</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
     <header>
-        <h1>Item Details</h1>
-    </header>
-    
-    <main>
-        <div class="item-detail-container">
-            <h1 id="item-name">Loading...</h1>
-            <p id="item-description" class="item-detail-info"></p>
-            <p id="item-price" class="item-detail-price"></p>
-            <a href="index.html" class="back-link">Back to Menu</a>
+      <h1>Item Details</h1>
+      <nav class="main-nav">
+        <div class="nav-left">
+          <!-- Left side can be used for other buttons if needed -->
         </div>
+        <div class="nav-center">
+          <a href="index.html" class="nav-link">Home</a>
+        </div>
+        <div class="nav-right">
+          <!-- Right side can be used for other buttons if needed -->
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <div class="item-detail-container">
+        <h1 id="item-name">Loading...</h1>
+        <p id="item-description" class="item-detail-info"></p>
+        <p id="item-price" class="item-detail-price"></p>
+        <a href="index.html" class="back-link">Back to Menu</a>
+      </div>
     </main>
 
     <script src="js/detail.js"></script>
-</body>
+  </body>
 </html>

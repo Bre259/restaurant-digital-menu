@@ -2,43 +2,81 @@
   {
     "id": "1",
     "name": "Margherita Pizza",
+    "name_ar": "بيتزا مارغريتا",
     "description": "Classic pizza with tomato sauce and mozzarella",
+    "description_ar": "بيتزا كلاسيكية مع صلصة الطماطم والموتزاريلا",
     "price": 12.99,
-    "image": "images/pizza.jpg"
+    "image": "images/pizza.jpg",
+    "category": "lunch"
   },
   {
     "id": "2",
     "name": "Cheeseburger",
+    "name_ar": "برجر بالجبن",
     "description": "Juicy beef burger with cheese and fresh vegetables",
+    "description_ar": "برجر لحم بقري عصيري مع الجبن والخضروات الطازجة",
     "price": 9.99,
-    "image": "images/burger.jpg"
+    "image": "images/burger.jpg",
+    "category": "lunch"
   },
   {
     "id": "3",
     "name": "Caesar Salad",
+    "name_ar": "سلطة سيزر",
     "description": "Fresh romaine lettuce with Caesar dressing and croutons",
+    "description_ar": "خس رومين طازج مع صلصة سيزر والكروتون",
     "price": 7.99,
-    "image": "images/salad.jpg"
+    "image": "images/salad.jpg",
+    "category": "lunch"
   },
   {
     "id": "4",
     "name": "Spaghetti Carbonara",
+    "name_ar": "سباغيتي كاربونارا",
     "description": "Pasta with eggs, cheese, pancetta, and black pepper",
+    "description_ar": "معكرونة مع البيض والجبن والبانسيتا والفلفل الأسود",
     "price": 14.99,
-    "image": "images/pasta.jpg"
+    "image": "images/pasta.jpg",
+    "category": "dinner"
   },
   {
     "id": "5",
     "name": "Grilled Salmon",
+    "name_ar": "سمك السلمون المشوي",
     "description": "Fresh salmon fillet with lemon and herbs",
+    "description_ar": "شريحة سلمون طازجة مع الليمون والأعشاب",
     "price": 18.99,
-    "image": "images/salmon.jpg"
+    "image": "images/salmon.jpg",
+    "category": "dinner"
   },
   {
     "id": "6",
     "name": "Chicken Soup",
+    "name_ar": "شوربة الدجاج",
     "description": "Homemade chicken soup with vegetables",
+    "description_ar": "شوربة دجاج منزلية مع الخضروات",
     "price": 6.99,
-    "image": "images/soup.jpg"
+    "image": "images/soup.jpg",
+    "category": "breakfast"
+  },
+  {
+    "id": "7",
+    "name": "Orange Juice",
+    "name_ar": "عصير البرتقال",
+    "description": "Freshly squeezed orange juice",
+    "description_ar": "عصير برتقال طازج",
+    "price": 3.99,
+    "image": "images/juice.jpg",
+    "category": "drinks"
+  },
+  {
+    "id": "8",
+    "name": "Coffee",
+    "name_ar": "قهوة",
+    "description": "Freshly brewed coffee",
+    "description_ar": "قهوة مُجهزة حديثاً",
+    "price": 2.99,
+    "image": "images/coffee.jpg",
+    "category": "drinks"
   }
 ]
