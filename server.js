@@ -1,9 +1,23 @@
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
+const os = require("os");
 
-const hostname = "localhost";
+const hostname = "0.0.0.0"; // Changed to bind to all network interfaces
 const port = 3000;
+
+// Function to get the local IP address
+function getLocalIP() {
+  const interfaces = os.networkInterfaces();
+  for (const name of Object.keys(interfaces)) {
+    for (const interface of interfaces[name]) {
+      if (interface.family === "IPv4" && !interface.internal) {
+        return interface.address;
+      }
+    }
+  }
+  return "127.0.0.1";
+}
 
 // MIME types
 const mimeTypes = {
@@ -54,6 +68,8 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
+  const localIP = getLocalIP();
+  console.log(`Server running at http://${localIP}:${port}/`);
+  console.log(`Local access: http://localhost:${port}/`);
   console.log("Press Ctrl+C to stop the server");
 });

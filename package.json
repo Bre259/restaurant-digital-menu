@@ -1,0 +1,21 @@
+{
+  "name": "restaurant-digital-menu",
+  "version": "1.0.0",
+  "description": "A digital menu for restaurants with QR code functionality",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "restaurant",
+    "menu",
+    "qr-code",
+    "digital-menu"
+  ],
+  "author": "Restaurant Digital Menu Team",
+  "license": "MIT",
+  "dependencies": {
+    "qrcodejs": "github:davidshimjs/qrcodejs"
+  }
+}
