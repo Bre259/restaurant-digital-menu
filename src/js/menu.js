@@ -14,6 +14,9 @@ const langEnBtn = document.getElementById("lang-en");
 const langArBtn = document.getElementById("lang-ar");
 const headerTitle = document.getElementById("header-title");
 const currencySelect = document.getElementById("currency-select");
+const themeLightBtn = document.getElementById("theme-light");
+const themeDarkBtn = document.getElementById("theme-dark");
+const colorSchemeSelect = document.getElementById("color-scheme-select");
 
 // State
 let isEditMode = false;
@@ -21,6 +24,8 @@ let currentItem = null;
 let currentLanguage = "en"; // Default language
 let currentCategory = "all"; // Default category
 let currentCurrency = "USD"; // Default currency
+let currentTheme = "light"; // Default theme
+let currentColorScheme = "default"; // Default color scheme
 
 // Currency exchange rate (USD to YER)
 const exchangeRates = {
@@ -59,6 +64,10 @@ const translations = {
     breakfast: "BREAKFAST",
     dinner: "DINNER",
     drinks: "DRINKS",
+    loading: "Loading...",
+    saving: "Saving...",
+    deleting: "Deleting...",
+    loadingMenu: "Loading menu items...",
   },
   ar: {
     pageTitle: "قائمة المطعم الرقمية",
@@ -89,11 +98,57 @@ const translations = {
     breakfast: "الإفطار",
     dinner: "العشاء",
     drinks: "المشروبات",
+    loading: "جار التحميل...",
+    saving: "جار الحفظ...",
+    deleting: "جار الحذف...",
+    loadingMenu: "جار تحميل عناصر القائمة...",
   },
 };
 
 // Database key for localStorage
 const DB_KEY = "restaurantMenuItems";
+
+// Show loading overlay with progress bar
+function showLoadingOverlay(message) {
+  // Remove any existing overlay
+  const existingOverlay = document.getElementById("loading-overlay");
+  if (existingOverlay) {
+    existingOverlay.remove();
+  }
+
+  // Create loading overlay
+  const overlay = document.createElement("div");
+  overlay.id = "loading-overlay";
+  overlay.className = "loading-overlay";
+  overlay.innerHTML = `
+    <div class="loading-content">
+      <div class="large-spinner"></div>
+      <h3>${message || translations[currentLanguage].loading}</h3>
+      <div class="progress-bar">
+        <div class="progress-bar-fill" id="progress-fill"></div>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+  return overlay;
+}
+
+// Update progress bar
+function updateProgress(percentage) {
+  const progressFill = document.getElementById("progress-fill");
+  if (progressFill) {
+    progressFill.style.width = `${percentage}%`;
+  }
+}
+
+// Hide loading overlay
+function hideLoadingOverlay() {
+  const overlay = document.getElementById("loading-overlay");
+  if (overlay) {
+    overlay.remove();
+  }
+}
 
 // Initialize language from localStorage or default to English
 function initLanguage() {
@@ -110,6 +165,69 @@ function initCurrency() {
   if (currencySelect) {
     currencySelect.value = currentCurrency;
   }
+}
+
+// Initialize theme from localStorage or default to light
+function initTheme() {
+  const savedTheme = localStorage.getItem("preferredTheme") || "light";
+  currentTheme = savedTheme;
+  setTheme(currentTheme);
+  updateThemeUI();
+}
+
+// Initialize color scheme from localStorage or default to default
+function initColorScheme() {
+  const savedColorScheme =
+    localStorage.getItem("preferredColorScheme") || "default";
+  currentColorScheme = savedColorScheme;
+  setColorScheme(currentColorScheme);
+  updateColorSchemeUI();
+}
+
+// Set theme
+function setTheme(theme) {
+  document.documentElement.setAttribute("data-theme", theme);
+  localStorage.setItem("preferredTheme", theme);
+}
+
+// Set color scheme
+function setColorScheme(colorScheme) {
+  document.documentElement.setAttribute("data-color-scheme", colorScheme);
+  localStorage.setItem("preferredColorScheme", colorScheme);
+}
+
+// Update theme UI (active button)
+function updateThemeUI() {
+  if (themeLightBtn && themeDarkBtn) {
+    if (currentTheme === "light") {
+      themeLightBtn.classList.add("active");
+      themeDarkBtn.classList.remove("active");
+    } else {
+      themeDarkBtn.classList.add("active");
+      themeLightBtn.classList.remove("active");
+    }
+  }
+}
+
+// Update color scheme UI
+function updateColorSchemeUI() {
+  if (colorSchemeSelect) {
+    colorSchemeSelect.value = currentColorScheme;
+  }
+}
+
+// Switch theme
+function switchTheme(theme) {
+  currentTheme = theme;
+  setTheme(theme);
+  updateThemeUI();
+}
+
+// Switch color scheme
+function switchColorScheme(colorScheme) {
+  currentColorScheme = colorScheme;
+  setColorScheme(colorScheme);
+  updateColorSchemeUI();
 }
 
 // Update language UI (active button)
@@ -295,11 +413,38 @@ function filterMenuItems(items, category) {
   return items.filter((item) => item.category === category);
 }
 
+// Show loading indicator
+function showLoadingIndicator(button, loadingTextKey) {
+  const originalHTML = button.innerHTML;
+  button.innerHTML =
+    '<span class="loading-spinner"></span> ' +
+    translations[currentLanguage][loadingTextKey];
+  button.disabled = true;
+  return originalHTML;
+}
+
+// Hide loading indicator
+function hideLoadingIndicator(button, originalHTML) {
+  button.innerHTML = originalHTML;
+  button.disabled = false;
+}
+
 // Load menu items from database
 async function loadMenuItems() {
+  // Show loading overlay
+  const loadingOverlay = showLoadingOverlay(
+    translations[currentLanguage].loadingMenu
+  );
+
   try {
+    // Simulate progress for demo purposes
+    updateProgress(20);
+
     // Initialize database if needed
     initDatabase();
+
+    // Simulate progress for demo purposes
+    updateProgress(40);
 
     // Get data from localStorage
     const storedData = localStorage.getItem(DB_KEY);
@@ -309,8 +454,14 @@ async function loadMenuItems() {
       menuItems = JSON.parse(storedData);
     }
 
+    // Simulate progress for demo purposes
+    updateProgress(60);
+
     // Filter items by current category
     const filteredItems = filterMenuItems(menuItems, currentCategory);
+
+    // Simulate progress for demo purposes
+    updateProgress(80);
 
     const menuContainer = document.getElementById("menu-container");
 
@@ -320,7 +471,7 @@ async function loadMenuItems() {
     // Show message if no items in category
     if (filteredItems.length === 0) {
       menuContainer.innerHTML = `
-        <div style="text-align: center; grid-column: 1 / -1; padding: 2rem; background: #f8f9fa; border-radius: 8px; margin: 1rem;">
+        <div style="text-align: center; grid-column: 1 / -1; padding: 2rem; background: var(--card-bg); border-radius: 8px; margin: 1rem; box-shadow: var(--card-shadow);">
           <h3>${
             currentLanguage === "ar"
               ? "لا توجد عناصر في هذه الفئة"
@@ -340,8 +491,16 @@ async function loadMenuItems() {
       const menuItemElement = createMenuItemElement(item);
       menuContainer.appendChild(menuItemElement);
     });
+
+    // Simulate progress for demo purposes
+    updateProgress(100);
   } catch (error) {
     console.error("Error loading menu items:", error);
+  } finally {
+    // Hide loading overlay
+    setTimeout(() => {
+      hideLoadingOverlay();
+    }, 500);
   }
 }
 
@@ -376,7 +535,7 @@ function createMenuItemElement(item) {
   const priceLabel = translations[currentLanguage].price;
 
   menuItem.innerHTML = `
-        <img src="${item.image}" alt="${itemName}">
+        <img src="${item.image}" alt="${itemName}" onerror="this.src='https://placehold.co/300x200?text=Image+Not+Available'">
         <div class="item-details">
             <h2>${itemName}</h2>
             <p>${itemDescription}</p>
@@ -437,7 +596,15 @@ function filterByCategory(category) {
 
 // Display item details for the QR code scan page
 async function displayItemDetails(id) {
+  // Show loading overlay
+  const loadingOverlay = showLoadingOverlay(
+    translations[currentLanguage].loading
+  );
+
   try {
+    // Simulate progress for demo purposes
+    updateProgress(30);
+
     // First check if we're getting data from QR code
     const qrData = sessionStorage.getItem("qrItemData");
 
@@ -451,6 +618,9 @@ async function displayItemDetails(id) {
         console.error("Error parsing QR data:", e);
       }
     }
+
+    // Simulate progress for demo purposes
+    updateProgress(60);
 
     // If no QR data, use the traditional method
     if (!item) {
@@ -467,6 +637,9 @@ async function displayItemDetails(id) {
 
       item = menuItems.find((i) => i.id === id);
     }
+
+    // Simulate progress for demo purposes
+    updateProgress(90);
 
     if (item) {
       // Get current language
@@ -536,8 +709,16 @@ async function displayItemDetails(id) {
                 </main>
             `;
     }
+
+    // Simulate progress for demo purposes
+    updateProgress(100);
   } catch (error) {
     console.error("Error loading item details:", error);
+  } finally {
+    // Hide loading overlay
+    setTimeout(() => {
+      hideLoadingOverlay();
+    }, 500);
   }
 }
 
@@ -562,6 +743,17 @@ function showAddItemModal() {
 // Edit existing item
 async function editItem(id) {
   try {
+    // Add visual feedback
+    const editButtons = document.querySelectorAll(".edit-btn");
+    editButtons.forEach((btn) => {
+      if (btn.getAttribute("onclick").includes(id)) {
+        btn.innerHTML =
+          '<span class="loading-spinner"></span> ' +
+          translations[currentLanguage].loading;
+        btn.disabled = true;
+      }
+    });
+
     // Initialize database if needed
     initDatabase();
 
@@ -593,9 +785,26 @@ async function editItem(id) {
 
       itemModal.style.display = "block";
     }
+
+    // Restore button state
+    editButtons.forEach((btn) => {
+      if (btn.getAttribute("onclick").includes(id)) {
+        btn.innerHTML = translations[currentLanguage].edit;
+        btn.disabled = false;
+      }
+    });
   } catch (error) {
     console.error("Error loading item for editing:", error);
     alert("Error loading item for editing. Please try again.");
+
+    // Restore button state on error
+    const editButtons = document.querySelectorAll(".edit-btn");
+    editButtons.forEach((btn) => {
+      if (btn.getAttribute("onclick").includes(id)) {
+        btn.innerHTML = translations[currentLanguage].edit;
+        btn.disabled = false;
+      }
+    });
   }
 }
 
@@ -607,7 +816,29 @@ async function deleteItem(id) {
       : "هل أنت متأكد من رغبتك في حذف هذا العنصر؟";
 
   if (confirm(confirmMessage)) {
+    // Show loading overlay
+    const loadingOverlay = showLoadingOverlay(
+      translations[currentLanguage].deleting
+    );
+
     try {
+      // Simulate progress for demo purposes
+      updateProgress(25);
+
+      // Add visual feedback
+      const deleteButtons = document.querySelectorAll(".delete-btn");
+      deleteButtons.forEach((btn) => {
+        if (btn.getAttribute("onclick").includes(id)) {
+          btn.innerHTML =
+            '<span class="loading-spinner"></span> ' +
+            translations[currentLanguage].deleting;
+          btn.disabled = true;
+        }
+      });
+
+      // Simulate progress for demo purposes
+      updateProgress(50);
+
       // Initialize database if needed
       initDatabase();
 
@@ -618,6 +849,9 @@ async function deleteItem(id) {
       if (storedData) {
         menuItems = JSON.parse(storedData);
       }
+
+      // Simulate progress for demo purposes
+      updateProgress(75);
 
       // Filter out the item to be deleted
       menuItems = menuItems.filter((item) => item.id !== id);
@@ -633,6 +867,17 @@ async function deleteItem(id) {
           ? "Item deleted successfully!"
           : "تم حذف العنصر بنجاح!";
       alert(successMessage);
+
+      // Restore button state
+      deleteButtons.forEach((btn) => {
+        if (btn.getAttribute("onclick").includes(id)) {
+          btn.innerHTML = translations[currentLanguage].delete;
+          btn.disabled = false;
+        }
+      });
+
+      // Simulate progress for demo purposes
+      updateProgress(100);
     } catch (error) {
       console.error("Error deleting item:", error);
       const errorMessage =
@@ -640,6 +885,20 @@ async function deleteItem(id) {
           ? "Error deleting item. Please try again."
           : "خطأ في حذف العنصر. يرجى المحاولة مرة أخرى.";
       alert(errorMessage);
+
+      // Restore button state on error
+      const deleteButtons = document.querySelectorAll(".delete-btn");
+      deleteButtons.forEach((btn) => {
+        if (btn.getAttribute("onclick").includes(id)) {
+          btn.innerHTML = translations[currentLanguage].delete;
+          btn.disabled = false;
+        }
+      });
+    } finally {
+      // Hide loading overlay
+      setTimeout(() => {
+        hideLoadingOverlay();
+      }, 500);
     }
   }
 }
@@ -657,9 +916,15 @@ function toggleEditMode() {
   if (body.classList.contains("edit-mode")) {
     body.classList.remove("edit-mode");
     editItemsBtn.textContent = translations[currentLanguage].editItems;
+    // Add visual feedback
+    editItemsBtn.classList.add("button-feedback");
+    setTimeout(() => editItemsBtn.classList.remove("button-feedback"), 300);
   } else {
     body.classList.add("edit-mode");
     editItemsBtn.textContent = translations[currentLanguage].finishEditing;
+    // Add visual feedback
+    editItemsBtn.classList.add("button-feedback");
+    setTimeout(() => editItemsBtn.classList.remove("button-feedback"), 300);
   }
 }
 
@@ -674,6 +939,7 @@ async function saveItem(event) {
   const category = document.getElementById("item-category").value;
   const imageFile = itemImageFile.files[0];
   const imageUrl = document.getElementById("item-image").value;
+  const saveButton = document.querySelector('button[type="submit"]');
 
   if (!name || !description || !price || (!imageFile && !imageUrl)) {
     const errorMessage =
@@ -684,13 +950,27 @@ async function saveItem(event) {
     return;
   }
 
+  // Show loading indicator
+  const originalHTML = showLoadingIndicator(saveButton, "saving");
+
+  // Show loading overlay
+  const loadingOverlay = showLoadingOverlay(
+    translations[currentLanguage].saving
+  );
+
   try {
+    // Simulate progress for demo purposes
+    updateProgress(20);
+
     let image = imageUrl;
 
     // If a file is uploaded, convert it to a data URL
     if (imageFile) {
       image = await readFileAsDataURL(imageFile);
     }
+
+    // Simulate progress for demo purposes
+    updateProgress(50);
 
     if (isEditMode) {
       // Update existing item
@@ -711,8 +991,14 @@ async function saveItem(event) {
       alert(successMessage);
     }
 
+    // Simulate progress for demo purposes
+    updateProgress(80);
+
     closeItemModal();
     loadMenuItems(); // Reload the menu to show the changes
+
+    // Simulate progress for demo purposes
+    updateProgress(100);
   } catch (error) {
     console.error("Error saving item:", error);
     const errorMessage =
@@ -720,6 +1006,14 @@ async function saveItem(event) {
         ? "Error saving item. Please try again."
         : "خطأ في حفظ العنصر. يرجى المحاولة مرة أخرى.";
     alert(errorMessage);
+  } finally {
+    // Hide loading indicator
+    hideLoadingIndicator(saveButton, originalHTML);
+
+    // Hide loading overlay
+    setTimeout(() => {
+      hideLoadingOverlay();
+    }, 500);
   }
 }
 
@@ -814,11 +1108,18 @@ if (itemId) {
   // We're on the main menu page
   initLanguage();
   initCurrency();
+  initTheme();
+  initColorScheme();
   loadMenuItems();
 
   // Event listeners for admin functions
   if (addItemBtn) {
-    addItemBtn.addEventListener("click", showAddItemModal);
+    addItemBtn.addEventListener("click", function () {
+      showAddItemModal();
+      // Add visual feedback
+      this.classList.add("button-feedback");
+      setTimeout(() => this.classList.remove("button-feedback"), 300);
+    });
   }
   if (editItemsBtn) {
     editItemsBtn.addEventListener("click", toggleEditMode);
@@ -832,16 +1133,57 @@ if (itemId) {
 
   // Language switcher event listeners
   if (langEnBtn) {
-    langEnBtn.addEventListener("click", () => switchLanguage("en"));
+    langEnBtn.addEventListener("click", function () {
+      switchLanguage("en");
+      // Add visual feedback
+      this.classList.add("button-feedback");
+      setTimeout(() => this.classList.remove("button-feedback"), 300);
+    });
   }
   if (langArBtn) {
-    langArBtn.addEventListener("click", () => switchLanguage("ar"));
+    langArBtn.addEventListener("click", function () {
+      switchLanguage("ar");
+      // Add visual feedback
+      this.classList.add("button-feedback");
+      setTimeout(() => this.classList.remove("button-feedback"), 300);
+    });
   }
 
   // Currency switcher event listener
   if (currencySelect) {
     currencySelect.addEventListener("change", function () {
       switchCurrency(this.value);
+      // Add visual feedback
+      this.classList.add("select-feedback");
+      setTimeout(() => this.classList.remove("select-feedback"), 300);
+    });
+  }
+
+  // Theme switcher event listeners
+  if (themeLightBtn) {
+    themeLightBtn.addEventListener("click", function () {
+      switchTheme("light");
+      // Add visual feedback
+      this.classList.add("button-feedback");
+      setTimeout(() => this.classList.remove("button-feedback"), 300);
+    });
+  }
+  if (themeDarkBtn) {
+    themeDarkBtn.addEventListener("click", function () {
+      switchTheme("dark");
+      // Add visual feedback
+      this.classList.add("button-feedback");
+      setTimeout(() => this.classList.remove("button-feedback"), 300);
+    });
+  }
+
+  // Color scheme switcher event listener
+  if (colorSchemeSelect) {
+    colorSchemeSelect.addEventListener("change", function () {
+      switchColorScheme(this.value);
+      // Add visual feedback
+      this.classList.add("select-feedback");
+      setTimeout(() => this.classList.remove("select-feedback"), 300);
     });
   }
 
@@ -852,6 +1194,9 @@ if (itemId) {
       e.preventDefault();
       const category = this.dataset.category;
       filterByCategory(category);
+      // Add visual feedback
+      categoryLinks.forEach((l) => l.classList.remove("active"));
+      this.classList.add("active");
     });
   });
 
